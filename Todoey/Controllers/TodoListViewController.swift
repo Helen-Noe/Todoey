@@ -17,9 +17,10 @@ class TodoListViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-//		if let items = defaults.array(forKey: "TodoListArray") as? [String]{
-//			itemArray = items
-//		}
+		
+		let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+		
+		print(dataFilePath!)
 		
 		let newItem = Item()
 		newItem.title = "Find Mike"
@@ -32,6 +33,10 @@ class TodoListViewController: UITableViewController {
 		let newItem3 = Item()
 		newItem3.title = "Destory Demogorgon"
 		itemArray.append(newItem3)
+		
+		if let items = defaults.array(forKey: "TodoListArray") as? [Item]{
+			itemArray = items
+		}
 		
 		print(itemArray)
 		
@@ -48,17 +53,12 @@ class TodoListViewController: UITableViewController {
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		
 		let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell",for: indexPath)
 		let item = itemArray[indexPath.row]
 		
 		cell.textLabel?.text = item.title
-//		print(indexPath.row)
-		
-		if item.done == true{
-			cell.accessoryType = .checkmark
-		} else{
-			cell.accessoryType = .none
-		}
+		cell.accessoryType = item.done ? .checkmark : .none
 		
 		return cell
 	}
@@ -67,12 +67,10 @@ class TodoListViewController: UITableViewController {
 	
 	// Action on selected row
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//		print(itemArray[indexPath.row])
 		
 		let item = itemArray[indexPath.row]
 		
 		// working on check mark
-		
 		item.done = !item.done
 		
 		tableView.deselectRow(at: indexPath, animated: true)
