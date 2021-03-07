@@ -8,8 +8,9 @@
 
 import UIKit
 import CoreData
+import SwipeCellKit
 
-class CategoryViewController: UITableViewController {
+class CategoryViewController: SwipeTableViewController{
 	
 	var categoryArray = [Category]()
 	
@@ -20,6 +21,7 @@ class CategoryViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		loadItems()
+		tableView.rowHeight = 80.0
     }
 
     // MARK: - Table view data source
@@ -30,10 +32,12 @@ class CategoryViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
-		let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell",for: indexPath)
-		let category = categoryArray[indexPath.row]
+//		let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell",for: indexPath) as! SwipeTableViewCell
 		
+		let category = categoryArray[indexPath.row]
 		cell.textLabel?.text = category.name
+		
+//		cell.delegate = self
 		
 		return cell
 	}
@@ -45,7 +49,6 @@ class CategoryViewController: UITableViewController {
 		} catch{
 			print("Error Saving Context, \(error)")
 		}
-		self.tableView.reloadData()
 	}
 	
 	func loadItems(with request: NSFetchRequest<Category> = Category.fetchRequest()){
@@ -73,6 +76,7 @@ class CategoryViewController: UITableViewController {
 			
 			self.categoryArray.append(newCategory)
 			self.saveItems()
+			self.tableView.reloadData()
 		}
 		
 		alert.addTextField { (alertTextField) in
@@ -98,3 +102,6 @@ class CategoryViewController: UITableViewController {
 		}
 	}
 }
+
+
+
