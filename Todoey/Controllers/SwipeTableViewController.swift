@@ -17,7 +17,12 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
 	
 	// table view data source methods
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		<#code#>
+		
+		let cell = tableView.dequeueReusableCell(withIdentifier: "Cell",for: indexPath) as! SwipeTableViewCell
+		
+		cell.delegate = self
+		
+		return cell
 	}
 	
 	
@@ -28,11 +33,7 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
 			
 			print ("Cell Deleted")
 			
-//			self.context.delete(self.categoryArray[indexPath.row])
-//			self.categoryArray.remove(at: indexPath.row)
-//
-//			self.saveItems()
-			
+			self.updateModel(at: indexPath)
 			
 //			print(indexPath.row)
 		}
@@ -48,5 +49,9 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
 		options.expansionStyle = .destructive
 //		options.transitionStyle = .border
 		return options
+	}
+	
+	func updateModel(at indexPath: IndexPath){
+		// update data model
 	}
 }

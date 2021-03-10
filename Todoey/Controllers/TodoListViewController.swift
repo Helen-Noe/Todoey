@@ -9,13 +9,14 @@
 import UIKit
 import CoreData
 
-class TodoListViewController: UITableViewController{
+class TodoListViewController: SwipeTableViewController{
 	
 	var itemArray = [Item]()
 	
 	var selectedCategory: Category?{
 		didSet{
 			loadItems()
+			tableView.rowHeight = 80.0
 		}
 	}
 	
@@ -38,7 +39,8 @@ class TodoListViewController: UITableViewController{
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
-		let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell",for: indexPath)
+		let cell = super.tableView(tableView, cellForRowAt: indexPath)
+		
 		let item = itemArray[indexPath.row]
 		
 		cell.textLabel?.text = item.title
@@ -65,6 +67,7 @@ class TodoListViewController: UITableViewController{
 //		itemArray.remove(at: indexPath.row)
 //		// save item in db
 		saveItems()
+		self.tableView.reloadData()
 		
 		tableView.deselectRow(at: indexPath, animated: true)
 	}
@@ -87,6 +90,7 @@ class TodoListViewController: UITableViewController{
 			
 			self.itemArray.append(newItem)
 			self.saveItems()
+			self.tableView.reloadData()
 
 		}
 		
@@ -94,9 +98,7 @@ class TodoListViewController: UITableViewController{
 			alertTextField.placeholder = "Create new item"
 			textField = alertTextField
 		}
-		
-		
-		
+	
 		alert.addAction(action)
 		present(alert, animated: true, completion: nil)
 	}
@@ -109,8 +111,6 @@ class TodoListViewController: UITableViewController{
 		} catch{
 			print("Error Saving Context, \(error)")
 		}
-
-		self.tableView.reloadData()
 	}
 	
 	func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil){
@@ -130,7 +130,18 @@ class TodoListViewController: UITableViewController{
 		}
 		self.tableView.reloadData()
 	}
+	
+	// MARK: - delete data from swipe
+
+	override func updateModel(at indexPath: IndexPath) {
+		self.context.delete(self.itemArray[indexPath.row])
+		self.itemArray.remove(at: indexPath.row)
+		self.saveItems()
+	}
+	
 }
+
+
 
 // MARK: - UISearch Bar Delegate
 

@@ -8,7 +8,6 @@
 
 import UIKit
 import CoreData
-import SwipeCellKit
 
 class CategoryViewController: SwipeTableViewController{
 	
@@ -32,12 +31,11 @@ class CategoryViewController: SwipeTableViewController{
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
-//		let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell",for: indexPath) as! SwipeTableViewCell
+		let cell = super.tableView(tableView, cellForRowAt: indexPath)
 		
 		let category = categoryArray[indexPath.row]
-		cell.textLabel?.text = category.name
 		
-//		cell.delegate = self
+		cell.textLabel?.text = category.name
 		
 		return cell
 	}
@@ -58,6 +56,14 @@ class CategoryViewController: SwipeTableViewController{
 			print("Error fetching data from context \(error)")
 		}
 		self.tableView.reloadData()
+	}
+	
+	// MARK: - delete data from swipe
+	
+	override func updateModel(at indexPath: IndexPath) {
+		self.context.delete(self.categoryArray[indexPath.row])
+		self.categoryArray.remove(at: indexPath.row)
+		self.saveItems()
 	}
 	
 	// MARK: - Add new category
