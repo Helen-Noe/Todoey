@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import ChameleonFramework
 
 class CategoryViewController: SwipeTableViewController{
 	
@@ -21,8 +22,17 @@ class CategoryViewController: SwipeTableViewController{
         super.viewDidLoad()
 		loadItems()
 		tableView.rowHeight = 80.0
+		tableView.separatorStyle = .none
     }
 
+	override func viewWillAppear(_ animated: Bool) {
+		guard let navBar = navigationController?.navigationBar else{
+			fatalError("Nav bar do not exist")
+		}
+		navBar.barTintColor = UIColor(hexString: "1D9BF6")
+		navBar.backgroundColor = UIColor(hexString: "1D9BF6")
+	}
+	
     // MARK: - Table view data source
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -36,6 +46,13 @@ class CategoryViewController: SwipeTableViewController{
 		let category = categoryArray[indexPath.row]
 		
 		cell.textLabel?.text = category.name
+		
+		guard let categoryColor = UIColor(hexString: category.color!) else {
+			fatalError()
+		}
+		
+		cell.backgroundColor = categoryColor
+		cell.textLabel?.textColor =  ContrastColorOf(categoryColor, returnFlat: true)
 		
 		return cell
 	}
@@ -79,6 +96,7 @@ class CategoryViewController: SwipeTableViewController{
 			// Core Data (Save/Create)
 			let newCategory = Category(context: self.context)
 			newCategory.name = textField.text ?? "New Category"
+			newCategory.color = UIColor.randomFlat().hexValue()
 			
 			self.categoryArray.append(newCategory)
 			self.saveItems()
